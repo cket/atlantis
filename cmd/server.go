@@ -63,6 +63,7 @@ const (
 	GitlabUserFlag             = "gitlab-user"
 	GitlabWebhookSecretFlag    = "gitlab-webhook-secret" // nolint: gosec
 	APISecretFlag              = "api-secret"
+	HidePrevPlanComments       = "hide-prev-plan-comments"
 	LogLevelFlag               = "log-level"
 	PortFlag                   = "port"
 	RepoConfigFlag             = "repo-config"
@@ -254,6 +255,11 @@ var boolFlags = map[string]boolFlag{
 	},
 	DisableApplyAllFlag: {
 		description:  "Disable \"atlantis apply\" command so a specific project/workspace/directory has to be specified for applies.",
+		defaultValue: false,
+	},
+	HidePrevPlanComments: {
+		description: "Hide previous plan comments to reduce clutter in the PR. " +
+			"VCS support is limited to: GitHub.",
 		defaultValue: false,
 	},
 	RequireApprovalFlag: {

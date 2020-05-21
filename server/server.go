@@ -245,7 +245,8 @@ func NewServer(userConfig UserConfig, config Config) (*Server, error) {
 		CheckoutMerge: userConfig.CheckoutStrategy == "merge",
 	}
 	projectLocker := &events.DefaultProjectLocker{
-		Locker: lockingClient,
+		Locker:    lockingClient,
+		VCSClient: vcsClient,
 	}
 	parsedURL, err := ParseAtlantisURL(userConfig.AtlantisURL)
 	if err != nil {
@@ -316,6 +317,7 @@ func NewServer(userConfig UserConfig, config Config) (*Server, error) {
 		Logger:                   logger,
 		AllowForkPRs:             userConfig.AllowForkPRs,
 		AllowForkPRsFlag:         config.AllowForkPRsFlag,
+		HidePrevPlanComments:     userConfig.HidePrevPlanComments,
 		SilenceForkPRErrors:      userConfig.SilenceForkPRErrors,
 		SilenceForkPRErrorsFlag:  config.SilenceForkPRErrorsFlag,
 		SilenceVCSStatusNoPlans:  userConfig.SilenceVCSStatusNoPlans,
