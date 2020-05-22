@@ -187,7 +187,7 @@ type EventParsing interface {
 	// that returns a merge request.
 	ParseGitlabMergeRequest(mr *gitlab.MergeRequest, baseRepo models.Repo) models.PullRequest
 
-	ParseAPIPlanRequest(path, cloneURL string) (baseRepo models.Repo, err error)
+	ParseAPIPlanRequest(vcsType models.VCSHostType, path, cloneURL string) (baseRepo models.Repo, err error)
 
 	// ParseBitbucketCloudPullEvent parses a pull request event from Bitbucket
 	// Cloud (bitbucket.org).
@@ -275,8 +275,15 @@ type EventParser struct {
 	AzureDevopsUser    string
 }
 
-func (e *EventParser) ParseAPIPlanRequest(repoFullName, cloneURL string) (models.Repo, error) {
-	return models.NewRepo(models.Gitlab, repoFullName, cloneURL, e.GitlabUser, e.GitlabToken)
+// ParseAPIPlanRequest parses api plan reqest information and returns the corresponding repo
+func (e *EventParser) ParseAPIPlanRequest(vcsType models.VCSHostType, repoFullName, cloneURL string) (models.Repo, error) {
+	switch vcsType {
+	case models.Github:
+		return models.NewRepo(models.Github, repoFullName, cloneURL, e.GithubUser, e.GithubToken)
+	case models.Gitlab:
+		return models.NewRepo(models.Gitlab, repoFullName, cloneURL, e.GitlabUser, e.GitlabToken)
+	}
+	return models.Repo{}, fmt.Errorf("only github and gitlab currently supported")
 }
 
 // GetBitbucketCloudPullEventType returns the type of the pull request

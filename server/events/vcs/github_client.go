@@ -320,8 +320,19 @@ func (g *GithubClient) MergePull(pull models.PullRequest) error {
 	return nil
 }
 
+// GetCloneURL returns string representing the cloneable url for the specified repository
 func (g *GithubClient) GetCloneURL(VCSHostType models.VCSHostType, repo string) (string, error) {
-	return "", fmt.Errorf("not yet implemented")
+	repoElements := strings.Split(repo, "/")
+	if len(repoElements) != 2 {
+		return "", fmt.Errorf("invalid github repo format - content be in format owner/repo")
+	}
+	repoName := repoElements[len(repoElements)-1]
+	owner := repoElements[len(repoElements)-2]
+	ghRepo, _, err := g.client.Repositories.Get(g.ctx, owner, repoName)
+	if err != nil {
+		return "", fmt.Errorf("error getting cloneable url for repository")
+	}
+	return ghRepo.GetCloneURL(), nil
 }
 
 // MarkdownPullLink specifies the string used in a pull request comment to reference another pull request.

@@ -107,10 +107,10 @@ func (p *DefaultProjectCommandBuilder) buildPlanAllCommands(ctx *CommandContext,
 	defer unlockFn()
 
 	// We'll need the list of modified files.
-	modifiedFiles, err := p.VCSClient.GetModifiedFiles(ctx.BaseRepo, ctx.Pull)
-	if err != nil {
-		return nil, err
-	}
+	modifiedFiles, _ := p.VCSClient.GetModifiedFiles(ctx.BaseRepo, ctx.Pull)
+	// if err != nil {
+	// 	return nil, err
+	// }
 	ctx.Log.Debug("%d files were modified in this pull request", len(modifiedFiles))
 
 	repoDir, _, err := p.WorkingDir.Clone(ctx.Log, ctx.BaseRepo, ctx.HeadRepo, ctx.Pull, workspace)

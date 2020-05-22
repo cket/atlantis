@@ -622,10 +622,12 @@ func (e *EventsController) APIPlan(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer runner.ProjectCommandRunner.(*events.DefaultProjectCommandRunner).Locker.(*events.DefaultProjectLocker).Locker.UnlockByPull(ctx.BaseRepo.FullName, -1)
+	e.Logger.Debug("running project commands in response to api request")
 	result := runner.RunProjectCmds(cmds, models.PlanCommand)
 
 	code = http.StatusOK
 	if result.HasErrors() {
+		e.Logger.Debug("encountered errors running project plan commands")
 		code = http.StatusInternalServerError
 	}
 
@@ -706,7 +708,7 @@ func (e *EventsController) apiParseAndValidate(w http.ResponseWriter, r *http.Re
 		return nil, nil, http.StatusInternalServerError, err
 	}
 
-	baseRepo, err := e.Parser.ParseAPIPlanRequest(request.Repository, cloneURL)
+	baseRepo, err := e.Parser.ParseAPIPlanRequest(VCSHostType, request.Repository, cloneURL)
 	if err != nil {
 		return nil, nil, http.StatusBadRequest, fmt.Errorf("failed to parse request: %v", err)
 	}
@@ -725,5 +727,6 @@ func (e *EventsController) apiParseAndValidate(w http.ResponseWriter, r *http.Re
 			HeadBranch: request.Ref,
 			HeadCommit: request.Ref,
 		},
+		Log: e.Logger,
 	}, 0, nil
 }
