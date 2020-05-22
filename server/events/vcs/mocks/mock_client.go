@@ -142,6 +142,25 @@ func (mock *MockClient) MergePull(pull models.PullRequest) error {
 	return ret0
 }
 
+func (mock *MockClient) GetCloneURL(VCSHostType models.VCSHostType, repo string) (string, error) {
+	if mock == nil {
+		panic("mock must not be nil. Use myMock := NewMockClient().")
+	}
+	params := []pegomock.Param{VCSHostType, repo}
+	result := pegomock.GetGenericMockFrom(mock).Invoke("GetCloneURL", params, []reflect.Type{reflect.TypeOf((*string)(nil)).Elem(), reflect.TypeOf((*error)(nil)).Elem()})
+	var ret0 string
+	var ret1 error
+	if len(result) != 0 {
+		if result[0] != nil {
+			ret0 = result[0].(string)
+		}
+		if result[1] != nil {
+			ret1 = result[1].(error)
+		}
+	}
+	return ret0, ret1
+}
+
 func (mock *MockClient) MarkdownPullLink(pull models.PullRequest) (string, error) {
 	if mock == nil {
 		panic("mock must not be nil. Use myMock := NewMockClient().")
@@ -426,6 +445,37 @@ func (c *MockClient_MergePull_OngoingVerification) GetAllCapturedArguments() (_p
 		_param0 = make([]models.PullRequest, len(c.methodInvocations))
 		for u, param := range params[0] {
 			_param0[u] = param.(models.PullRequest)
+		}
+	}
+	return
+}
+
+func (verifier *VerifierMockClient) GetCloneURL(VCSHostType models.VCSHostType, repo string) *MockClient_GetCloneURL_OngoingVerification {
+	params := []pegomock.Param{VCSHostType, repo}
+	methodInvocations := pegomock.GetGenericMockFrom(verifier.mock).Verify(verifier.inOrderContext, verifier.invocationCountMatcher, "GetCloneURL", params, verifier.timeout)
+	return &MockClient_GetCloneURL_OngoingVerification{mock: verifier.mock, methodInvocations: methodInvocations}
+}
+
+type MockClient_GetCloneURL_OngoingVerification struct {
+	mock              *MockClient
+	methodInvocations []pegomock.MethodInvocation
+}
+
+func (c *MockClient_GetCloneURL_OngoingVerification) GetCapturedArguments() (models.VCSHostType, string) {
+	VCSHostType, repo := c.GetAllCapturedArguments()
+	return VCSHostType[len(VCSHostType)-1], repo[len(repo)-1]
+}
+
+func (c *MockClient_GetCloneURL_OngoingVerification) GetAllCapturedArguments() (_param0 []models.VCSHostType, _param1 []string) {
+	params := pegomock.GetGenericMockFrom(c.mock).GetInvocationParams(c.methodInvocations)
+	if len(params) > 0 {
+		_param0 = make([]models.VCSHostType, len(c.methodInvocations))
+		for u, param := range params[0] {
+			_param0[u] = param.(models.VCSHostType)
+		}
+		_param1 = make([]string, len(c.methodInvocations))
+		for u, param := range params[1] {
+			_param1[u] = param.(string)
 		}
 	}
 	return
